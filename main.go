@@ -28,7 +28,8 @@ func main() {
 
 	var experiment experiment.Experiment
 
-	experiment.Initialize(config.FieldSize, population.Individuals[0], doorPosition, 20)
+	experiment.Initialize(config.FieldSize, population.Individuals[0], doorPosition)
 
 	experiment.Draw()
+	experiment.Evaluate()
 }

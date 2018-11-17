@@ -17,7 +17,7 @@ func (r *Rand) initialize() {
 	r.seeded = true
 }
 
-func (r Rand) Random(max int) int {
+func (r *Rand) Random(max int) int {
 	if !r.seeded {
 		r.initialize()
 	}

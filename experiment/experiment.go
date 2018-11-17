@@ -3,6 +3,7 @@ package experiment
 import (
 	"fmt"
 	"image"
+	"math"
 
 	"../config"
 	"../genetic"
@@ -45,10 +46,11 @@ type Experiment struct {
 	DoorPosition     Position
 	SmallestDistance int
 	MaxSteps         int
+	Step             int
 	Size             config.Size
 }
 
-func (exp *Experiment) Initialize(size config.Size, chr genetic.Chromosome, doorPos Position, maxSteps int) {
+func (exp *Experiment) Initialize(size config.Size, chr genetic.Chromosome, doorPos Position) {
 	exp.Chromosome = chr
 	exp.CurrentPosition = CenterPosition(size)
 	exp.DoorPosition = doorPos
@@ -60,12 +62,13 @@ func (exp *Experiment) Initialize(size config.Size, chr genetic.Chromosome, door
 		}
 	}
 	exp.Field[exp.CurrentPosition.X][exp.CurrentPosition.Y] = true
-	exp.MaxSteps = maxSteps
+	exp.MaxSteps = CalculateMaxSteps(size)
+	exp.Step = 0
 	exp.Size = size
 }
 
 func (exp *Experiment) Draw() {
-	experimentPicture := ""
+	experimentPicture := fmt.Sprintf("Experiment #%v\n", exp.Step)
 	for i := 0; i < exp.Size.X; i++ {
 		for j := 0; j < exp.Size.Y; j++ {
 			if exp.CurrentPosition.Equals(Position{i, j}) {
@@ -81,8 +84,53 @@ func (exp *Experiment) Draw() {
 		experimentPicture += "\n"
 	}
 	fmt.Println(experimentPicture)
+	fmt.Println("Chromosome:", exp.Chromosome)
+	fmt.Println("SmallestDistance:", exp.SmallestDistance)
+}
+
+func (exp *Experiment) MakeStep() {
+	stepCommand := exp.Chromosome.Genes[exp.CurrentPosition.X][exp.CurrentPosition.Y]
+	fmt.Println("Step command:", stepCommand)
+	switch stepCommand {
+	case 0:
+		if exp.CurrentPosition.Y > 0 {
+			exp.CurrentPosition.Y -= 1
+		}
+	case 1:
+		if exp.CurrentPosition.X < exp.Size.X-1 {
+			exp.CurrentPosition.X += 1
+		}
+	case 2:
+		if exp.CurrentPosition.Y < exp.Size.Y-1 {
+			exp.CurrentPosition.Y += 1
+		}
+	case 3:
+		if exp.CurrentPosition.X > 0 {
+			exp.CurrentPosition.X -= 1
+		}
+	}
+	exp.Field[exp.CurrentPosition.X][exp.CurrentPosition.Y] = true
 }
 
 func (exp *Experiment) Evaluate() {
+	for exp.Step < exp.MaxSteps {
+		exp.Step++
+		exp.MakeStep()
+		exp.CalculateDistance()
+		if exp.SmallestDistance == 0 {
+			return
+		}
+		exp.Draw()
+	}
+}
 
+func (exp *Experiment) CalculateDistance() {
+	distance := int(math.Abs(float64(exp.DoorPosition.X-exp.CurrentPosition.X)) + math.Abs(float64(exp.DoorPosition.Y-exp.CurrentPosition.Y)))
+	if distance < exp.SmallestDistance {
+		exp.SmallestDistance = distance
+	}
+}
+
+func CalculateMaxSteps(size config.Size) int {
+	return (size.X/2 + 1) * (size.Y/2 + 1)
 }

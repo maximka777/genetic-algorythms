@@ -38,6 +38,10 @@ func PrepareConfig() (Config, error) {
 
 	flag.Parse()
 
+	if *popSize < 2 {
+		return Config{}, errors.GeneticError{"Population size must be higher than 1"}
+	}
+
 	fieldSizeRegExp := regexp.MustCompile(`\d+\*\d+`)
 	if !fieldSizeRegExp.MatchString(*fieldSizeString) {
 		return Config{}, errors.GeneticError{"Incorrect format of field size"}
