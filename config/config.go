@@ -18,13 +18,13 @@ func (s Size) String() string {
 }
 
 type Config struct {
-	popSize   int
-	maxGen    int
-	fieldSize Size
+	PopSize   int
+	MaxGen    int
+	FieldSize Size
 }
 
 func (conf Config) String() string {
-	return fmt.Sprintf("Config {popSize: %v, maxGen: %v, fieldSize: %v}", conf.popSize, conf.maxGen, conf.fieldSize)
+	return fmt.Sprintf("Config {PopSize: %v, MaxGen: %v, FieldSize: %v}", conf.PopSize, conf.MaxGen, conf.FieldSize)
 }
 
 func isAsterisk(r rune) bool {
@@ -32,9 +32,9 @@ func isAsterisk(r rune) bool {
 }
 
 func PrepareConfig() (Config, error) {
-	popSize := flag.Int("popSize", 10, "Population size")
+	popSize := flag.Int("popSize", 4, "Population size")
 	maxGen := flag.Int("maxGen", 100, "Maximal count of generations")
-	fieldSizeString := flag.String("fieldSize", "32*32", "Field size")
+	fieldSizeString := flag.String("fieldSize", "6*6", "Field size")
 
 	flag.Parse()
 
@@ -42,12 +42,9 @@ func PrepareConfig() (Config, error) {
 	if !fieldSizeRegExp.MatchString(*fieldSizeString) {
 		return Config{}, errors.GeneticError{"Incorrect format of field size"}
 	}
-
 	fieldSizeFields := strings.FieldsFunc(*fieldSizeString, isAsterisk)
-
 	fieldSizeWidth, _ := strconv.Atoi(fieldSizeFields[0])
 	fieldSizeHeight, _ := strconv.Atoi(fieldSizeFields[1])
-
 	fieldSize := Size{fieldSizeWidth, fieldSizeHeight}
 
 	return Config{*popSize, *maxGen, fieldSize}, nil
