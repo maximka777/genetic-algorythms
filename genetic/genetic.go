@@ -66,11 +66,6 @@ type Population struct {
 func (pop Population) String() string {
 	s := "Population {\n"
 	s += fmt.Sprintf("\tGeneration: %v\n", pop.Generation)
-	//s += "\tIndividuals: {\n"
-	//for _, chr := range pop.Individuals {
-	//	s += fmt.Sprintf("%v", chr) + "\n"
-	//}
-	//s += "\t}\n"
 	s += fmt.Sprintf("\tFittest: %v\n", pop.Fittest)
 	s += "}\n"
 	return s
@@ -218,13 +213,10 @@ func (exp *Experiment) Draw() {
 		experimentPicture += "\n"
 	}
 	fmt.Println(experimentPicture)
-	//fmt.Println("Chromosome:", exp.Chromosome)
-	//fmt.Println("SmallestDistance:", exp.SmallestDistance)
 }
 
 func (exp *Experiment) MakeStep() {
 	stepCommand := exp.Chromosome.Genes[exp.CurrentPosition.X][exp.CurrentPosition.Y]
-	//fmt.Println("Step command:", stepCommand)
 	switch stepCommand {
 	case 0:
 		if exp.CurrentPosition.Y > 0 {
@@ -255,10 +247,10 @@ func (exp *Experiment) Evaluate(draw bool) {
 		exp.Step++
 		exp.MakeStep()
 		exp.CalculateDistance()
+		if draw {
+			exp.Draw()
+		}
 		if exp.SmallestDistance == 0 {
-			if draw {
-				exp.Draw()
-			}
 			return
 		}
 	}

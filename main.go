@@ -23,12 +23,9 @@ func main() {
 
 	population.CalculateFitness(config)
 
-	//fmt.Println(population)
-
 	for population.Fittest != 0 && population.Generation < config.MaxGen - 1 {
 		population.NextGeneration()
 		population.CalculateFitness(config)
-		//fmt.Println(population)
 	}
 
 	fmt.Println(population)
