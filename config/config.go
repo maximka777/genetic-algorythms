@@ -3,28 +3,22 @@ package config
 import (
 	"flag"
 	"fmt"
-	"image"
 	"regexp"
 	"strconv"
 	"strings"
 
 	"../errors"
+	"../utility"
 )
-
-type Size image.Point
-
-func (s Size) String() string {
-	return fmt.Sprintf("%v*%v", s.X, s.Y)
-}
 
 type Config struct {
 	PopSize   int
 	MaxGen    int
-	FieldSize Size
+	FieldSize utility.Size
 }
 
 func (conf Config) String() string {
-	return fmt.Sprintf("Config {PopSize: %v, MaxGen: %v, FieldSize: %v}", conf.PopSize, conf.MaxGen, conf.FieldSize)
+	return fmt.Sprintf("Config {PopSize: %v, MaxGen: %v, FieldSize: %v}\n", conf.PopSize, conf.MaxGen, conf.FieldSize)
 }
 
 func isAsterisk(r rune) bool {
@@ -34,12 +28,16 @@ func isAsterisk(r rune) bool {
 func PrepareConfig() (Config, error) {
 	popSize := flag.Int("popSize", 4, "Population size")
 	maxGen := flag.Int("maxGen", 100, "Maximal count of generations")
-	fieldSizeString := flag.String("fieldSize", "6*6", "Field size")
+	fieldSizeString := flag.String("fieldSize", "10*10", "Field size")
 
 	flag.Parse()
 
 	if *popSize < 2 {
 		return Config{}, errors.GeneticError{"Population size must be higher than 1"}
+	}
+
+	if *maxGen < 1 {
+		return Config{}, errors.GeneticError{"Maximal count of generations must be higher than 0"}
 	}
 
 	fieldSizeRegExp := regexp.MustCompile(`\d+\*\d+`)
@@ -49,7 +47,7 @@ func PrepareConfig() (Config, error) {
 	fieldSizeFields := strings.FieldsFunc(*fieldSizeString, isAsterisk)
 	fieldSizeWidth, _ := strconv.Atoi(fieldSizeFields[0])
 	fieldSizeHeight, _ := strconv.Atoi(fieldSizeFields[1])
-	fieldSize := Size{fieldSizeWidth, fieldSizeHeight}
+	fieldSize := utility.Size{fieldSizeWidth, fieldSizeHeight}
 
 	return Config{*popSize, *maxGen, fieldSize}, nil
 }

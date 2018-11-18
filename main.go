@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"./config"
-	"./experiment"
 	"./genetic"
 )
 
@@ -20,16 +19,21 @@ func main() {
 
 	var population genetic.Population
 
-	population.Initialize(config.PopSize, config.FieldSize.X, config.FieldSize.Y)
+	population.Initialize(config.PopSize, config.FieldSize)
 
-	fmt.Println("Initial population:", population)
+	population.CalculateFitness(config)
 
-	doorPosition := experiment.RandomDoorPosition(config.FieldSize)
+	//fmt.Println(population)
 
-	var experiment experiment.Experiment
+	for population.Fittest != 0 && population.Generation < config.MaxGen - 1 {
+		population.NextGeneration()
+		population.CalculateFitness(config)
+		//fmt.Println(population)
+	}
 
-	experiment.Initialize(config.FieldSize, population.Individuals[0], doorPosition)
-
-	experiment.Draw()
-	experiment.Evaluate()
+	fmt.Println(population)
+	fittestChromosome := population.GetFittestIndividual()
+	fmt.Println("Fittest chromosome:", fittestChromosome)
+	fittestChromosome.Fitness = 1 << 32 - 1
+	fittestChromosome.CalculateFitness(config, population.DoorPosition, true)
 }
