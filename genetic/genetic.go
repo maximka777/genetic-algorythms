@@ -40,8 +40,12 @@ func (chr *Chromosome) Random(width, height int) {
 func (chr Chromosome) String() string {
 	s := "Chromosome {\n"
 	s += "\tGenes: {\n"
-	for _, row := range chr.Genes {
-		s += fmt.Sprintf("\t\t%v\n", row)
+	for j := 0; j < cap(chr.Genes[0]); j++ {
+		s += "\t\t[ "
+		for i := 0; i < cap(chr.Genes); i++ {
+			s += fmt.Sprintf("%v ", chr.Genes[i][j])
+		}
+		s += "]\n"
 	}
 	s += "\t}\n"
 	s += fmt.Sprintf("\tFitness: %v\n", chr.Fitness)
@@ -193,9 +197,9 @@ func (exp *Experiment) Initialize(size utility.Size, chr Chromosome, doorPos uti
 }
 
 func (exp *Experiment) Draw() {
-	experimentPicture := fmt.Sprintf("Experiment #%v\n", exp.Step)
-	for i := 0; i < exp.Size.X; i++ {
-		for j := 0; j < exp.Size.Y; j++ {
+	experimentPicture := fmt.Sprintf("Experiment\nStep#%v\n", exp.Step)
+	for j := 0; j < exp.Size.Y; j++ {
+		for i := 0; i < exp.Size.X; i++ {
 			if exp.CurrentPosition.Equals(utility.Position{i, j}) {
 				if exp.CurrentPosition.Equals(exp.DoorPosition) {
 					experimentPicture += "W "
