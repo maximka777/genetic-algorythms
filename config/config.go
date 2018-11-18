@@ -26,9 +26,9 @@ func isAsterisk(r rune) bool {
 }
 
 func PrepareConfig() (Config, error) {
-	popSize := flag.Int("popSize", 4, "Population size")
-	maxGen := flag.Int("maxGen", 100, "Maximal count of generations")
-	fieldSizeString := flag.String("fieldSize", "7*7", "Field size")
+	popSize := flag.Int("popSize", 100, "Population size")
+	maxGen := flag.Int("maxGen", 10000, "Maximal count of generations")
+	fieldSizeString := flag.String("fieldSize", "80*80", "Field size")
 
 	flag.Parse()
 

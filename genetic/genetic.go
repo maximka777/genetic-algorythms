@@ -251,10 +251,14 @@ func (exp *Experiment) Evaluate(draw bool) {
 		exp.Step++
 		exp.MakeStep()
 		exp.CalculateDistance()
-		if draw {
-			exp.Draw()
-		}
+		// NOTE: Uncomment me if you want to watch the whole experiment
+		//if draw {
+		//	exp.Draw()
+		//}
 		if exp.SmallestDistance == 0 {
+			if draw {
+				exp.Draw()
+			}
 			return
 		}
 	}

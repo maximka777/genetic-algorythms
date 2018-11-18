@@ -33,8 +33,8 @@ func (pos Position) Equals(pos1 Position) bool {
 }
 
 func RandomDoorPosition(size Size) Position {
-	isWidth := Randomizer.Random(1) == 1
-	isStart := Randomizer.Random(1) == 1
+	isWidth := Randomizer.Random(2) == 1
+	isStart := Randomizer.Random(2) == 1
 
 	if isWidth {
 		if isStart {
